@@ -1,7 +1,7 @@
 use anchor_lang::prelude::*;
 use anchor_spl::{associated_token::AssociatedToken, token::{transfer_checked, TransferChecked}, token_interface::{ Mint, TokenAccount, TokenInterface}};
 
-use crate::state::Escrow;
+use crate::{errors::EscrowError, state::Escrow};
 
 #[derive(Accounts)]
 #[instruction(seed: u64)]
@@ -72,8 +72,22 @@ impl <'info> Make<'info> {
                 authority: self.maker.to_account_info()
         });
 
-        transfer_checked(cpi_context, amount, self.mint_a.decimals);
+        transfer_checked(cpi_context, amount, self.mint_a.decimals)?;
         Ok(())
     }
+}
 
+pub fn handler(ctx: Context<Make>, seed: u64, receive: u64, amount: u64) -> Result<()> {
+    // Validate the amount
+    require!(receive > 0, EscrowError::InvalidAmount);
+    require!(amount > 0, EscrowError::InvalidAmount);
+
+    // Save the Escrow Data
+    ctx.accounts
+        .populate_escrow(seed, receive, ctx.bumps.escrow)?;
+
+    // Deposit Tokens
+    ctx.accounts.deposit_tokens(amount)?;
+
+    Ok(())
 }
