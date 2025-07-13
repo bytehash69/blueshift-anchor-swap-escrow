@@ -19,8 +19,8 @@ pub struct Refund<'info> {
         close = maker,
         seeds = ["escrow".as_bytes(), maker.key().as_ref(), escrow.seed.to_le_bytes().as_ref()],
         bump = escrow.bump,
-        has_one = maker @ EscrowError::InvalidMaker,
-        has_one = mint_a @ EscrowError::InvalidMintA,
+        has_one = maker,
+        has_one = mint_a 
     )]
     pub escrow: Account<'info, Escrow>,
 
@@ -65,8 +65,7 @@ impl<'info> Refund<'info> {
                 to: self.maker_ata_a.to_account_info(),
                 mint: self.mint_a.to_account_info(),
                 authority: self.escrow.to_account_info(),
-            },
-            &signer_seeds,
+            },&signer_seeds,
         );
 
         // Transfer Token A (Vault -> Maker)

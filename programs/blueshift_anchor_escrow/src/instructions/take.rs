@@ -96,13 +96,13 @@ impl<'info> Take<'info> {
         ]];
 
         let cpi_context = CpiContext::new_with_signer(
-                self.token_program.to_account_info(),
-                TransferChecked {
-                    from: self.vault.to_account_info(),
-                    to: self.taker_ata_a.to_account_info(),
-                    mint: self.mint_a.to_account_info(),
-                    authority: self.escrow.to_account_info(),
-                },&signer_seeds);
+            self.token_program.to_account_info(),
+            TransferChecked {
+                from: self.vault.to_account_info(),
+                to: self.taker_ata_a.to_account_info(),
+                mint: self.mint_a.to_account_info(),
+                authority: self.escrow.to_account_info(),
+        },&signer_seeds);
 
         transfer_checked(
             cpi_context,
@@ -110,16 +110,15 @@ impl<'info> Take<'info> {
             self.mint_a.decimals,
         )?;
 
-        // Close the Vault
-        close_account(CpiContext::new_with_signer(
+        let close_context = CpiContext::new_with_signer(
             self.token_program.to_account_info(),
             CloseAccount {
                 account: self.vault.to_account_info(),
                 authority: self.escrow.to_account_info(),
                 destination: self.maker.to_account_info(),
-            },
-            &signer_seeds,
-        ))?;
+        },&signer_seeds);
+        // Close the Vault
+        close_account(close_context)?;
 
         Ok(())
     }

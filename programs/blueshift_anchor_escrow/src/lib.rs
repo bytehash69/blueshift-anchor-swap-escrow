@@ -25,9 +25,9 @@ declare_id!("22222222222222222222222222222222222222222222");
         Ok(())
     }
  
-    // #[instruction(discriminator = 2)]
-    // pub fn refund(ctx: Context<Refund>) -> Result<()> {
-    //     instructions::refund::handler(ctx)?;
-    //     Ok(())
-    // }
+    #[instruction(discriminator = 2)]
+    pub fn refund(ctx: Context<Refund>) -> Result<()> {
+        instructions::refund::handler(ctx)?;
+        Ok(())
+    }
 }
