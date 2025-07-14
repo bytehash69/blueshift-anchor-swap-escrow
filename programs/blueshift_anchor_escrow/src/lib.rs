@@ -7,7 +7,7 @@ mod instructions;
 mod state;
 use instructions::*;
 
-declare_id!("22222222222222222222222222222222222222222222");
+declare_id!("8p6yFycZLmZerMnytqAw8t241dLL2EJfvjz6JiRpiomC");
  
 #[program]
   pub mod blueshift_anchor_escrow {
