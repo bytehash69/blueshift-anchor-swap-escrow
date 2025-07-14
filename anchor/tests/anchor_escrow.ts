@@ -1,6 +1,6 @@
 import * as anchor from "@coral-xyz/anchor";
 import { Program } from "@coral-xyz/anchor";
-import { BlueshiftAnchorEscrow } from "../target/types/blueshift_anchor_escrow";
+import { AnchorEscrow } from "../target/types/anchor_escrow";
 import { expect } from "chai";
 import { TOKEN_PROGRAM_ID } from "@coral-xyz/anchor/dist/cjs/utils/token";
 import {
@@ -15,14 +15,12 @@ import {
   SystemProgram,
   Transaction,
 } from "@solana/web3.js";
-import { airdropIfRequired } from "@solana-developers/helpers";
 
-describe("blueshift_anchor_escrow", () => {
+describe("anchor_escrow", () => {
   const provider = anchor.AnchorProvider.env();
   anchor.setProvider(provider);
 
-  const program = anchor.workspace
-    .blueshiftAnchorEscrow as Program<BlueshiftAnchorEscrow>;
+  const program = anchor.workspace.AnchorEscrow as Program<AnchorEscrow>;
 
   let mintA: anchor.web3.PublicKey;
   let mintB: anchor.web3.PublicKey;
@@ -210,7 +208,7 @@ describe("blueshift_anchor_escrow", () => {
     console.log(`✅ All assertions passed.\n`);
   });
 
-  it("Taker accepts the offer pays to payer and withdraws the amount from vault", async () => {
+  it("🔹Taker accepts the offer pays to payer and withdraws the amount from vault", async () => {
     const tx = await program.methods
       .take()
       .accounts({
@@ -268,4 +266,21 @@ describe("blueshift_anchor_escrow", () => {
     expect(Number(makerAtaAccountBalanceB)).to.equal(receive.toNumber());
     console.log(`✅ All assertions passed.\n`);
   });
+
+  // it("🔹 Maker refunds back the amount and closes the escrow account", async () => {
+  //   const tx = await program.methods
+  //     .refund()
+  //     .accounts({
+  //       //@ts-ignore
+  //       maker: provider.publicKey,
+  //       escrow: escrow,
+  //       mintA: mintA,
+  //       vault: vault,
+  //       makerAtaA: makerAtaAccountA,
+  //       associatedTokenProgram: anchor.utils.token.ASSOCIATED_PROGRAM_ID,
+  //       tokenProgram: TOKEN_PROGRAM_ID,
+  //       systemProgram: anchor.web3.SystemProgram.programId,
+  //     })
+  //     .rpc();
+  // });
 });
